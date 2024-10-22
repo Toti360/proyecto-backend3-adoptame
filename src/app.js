@@ -12,6 +12,8 @@ import mocksRouter from "./routes/mocks.router.js";
 const app = express();
 const PORT = process.env.PORT||8080;
 const connection = mongoose.connect(`mongodb+srv://aburoxana:917325@cluster0.wvf05f6.mongodb.net/backend3?retryWrites=true&w=majority&appName=Cluster0`)
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Error connecting to MongoDB:', err));
 
 app.use(express.json());
 app.use(cookieParser());

@@ -2,13 +2,23 @@ import { petsService, usersService } from "../services/index.js";
 import MockingService from "../services/mocking.js";
 
 const getMockingPets = async (req, res) => {
-    const pets = await MockingService.generateMockingPets(100); 
-    res.send({status: "success", payload: pets}); 
+    try {
+        const pets = await MockingService.generateMockingPets(100);
+        res.send({ status: "success", payload: pets });
+    } catch (error) {
+        console.error("Error generating mock pets:", error);
+        res.status(500).send({ status: "error", error: error.message });
+    }
 }
 
 const getMockingUsers = async (req, res) => {
-    const users = await MockingService.generateMockingUsers(50);
-    res.send({status: "success", payload: users}); 
+    try {
+        const users = await MockingService.generateMockingUsers(50);
+        res.send({ status: "success", payload: users });
+    } catch (error) {
+        console.error("Error generating mock users:", error);
+        res.status(500).send({ status: "error", error: error.message });
+    }
 }
 
 const generateData = async (req, res) => {
@@ -21,10 +31,10 @@ const generateData = async (req, res) => {
         const mockingPets = await MockingService.generateMockingPets(pets);
 
         //Insertar los datos generados en la BD: 
-        await Promise.all(
-            mockingUsers.map(user => usersService.create(user)),
-            mockingPets.map(pet => petsService.create(pet))
-        );
+        await Promise.all([
+            ...mockingUsers.map(user => usersService.create(user)),
+            ...mockingPets.map(pet => petsService.create(pet))
+        ]);
         
         res.send({
             status: "success",
